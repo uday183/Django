@@ -1,0 +1,18 @@
+{% load get_add %}
+<html>
+    <body>
+        <h2>uday</h2>
+
+        {% for e in data  %}
+            {{ e.name }}<br>
+            {{ e.place }}<br>
+            {{ e.phone }}<br>
+            {% getAddress e.pk as  addr_obj%}
+            {% for k in addr_obj%}
+                {{k.pin}}<br>
+            {% endfor %}
+        {% endfor %}
+    </body>
+</html>
+
+
