@@ -3,6 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db import transaction
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import logging
+kencloud_logger = logging.getLogger('kencloud')
+kencloud_except_logger = logging.getLogger('kencloud_except')
 from .models import Book
 import datetime
 import gc
@@ -68,6 +71,7 @@ class GetBulkNormal(APIView):
         st = datetime.datetime.now()
         print ("started time:",st)
         obj =[(i.name,i.place,i.country) for i in Book.objects.iterator()][:10]
+        kencloud_logger.info('GetBulkNormal(%s) ' %(obj))
         end = datetime.datetime.now()
         print ("end time time:",end)
         print("diff :", end-st)
@@ -88,6 +92,7 @@ class GetBulk(APIView):
         print ("started time:",st)
         count = Book.objects.all().count()
         chunk_size = 1210000
+        kencloud_logger.info('GetBulkNormal(%s) ' %(count))
         # import ipdb;ipdb.set_trace()
         lst=[]
         for i in range(0, count, chunk_size):
@@ -133,7 +138,7 @@ class GetBulkQueryIterator(APIView):
         print ("end time time:",end)
         print("diff :", end-st)
         #import ipdb;ipdb.set_trace()
-
+        kencloud_logger.info('GetBulkQueryIterator(%s) ' %(users))
         return Response([{'name':i.name,'place':i.place,'country':i.country} for i in users])
         #return Response([{'name':i.name,'place':i.place,'country':i.country} for i in res])
 #result

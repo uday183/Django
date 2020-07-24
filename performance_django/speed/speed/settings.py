@@ -15,7 +15,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
+PROJECT_NAME = BASE_DIR.split('/')[-1]
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
@@ -120,3 +120,62 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOG_FILES = ['kencloud','kencloud_except']
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'formatters': {
+        'simple': {
+            'format': '[%(asctime)s] %(levelname)s %(message)s',
+        'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+        'verbose': {
+            'format': '[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s',
+        'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+    },
+    'handlers': {
+        LOG_FILES[0]+'_log': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR+'/'+PROJECT_NAME+'/logs/'+LOG_FILES[0]+'.log',
+            'formatter': 'verbose',
+        'filters': ['require_debug_true']
+        },
+    'PP_'+LOG_FILES[0]+'_log': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR+'/'+PROJECT_NAME+'/logs/'+LOG_FILES[0]+'.log',
+            'formatter': 'verbose', 
+            'filters': ['require_debug_false'],
+        },
+        LOG_FILES[1]+'_log': {
+            'level': 'CRITICAL',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR+'/'+PROJECT_NAME+'/logs/'+LOG_FILES[1]+'.log',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        LOG_FILES[0]: {
+            'handlers': [LOG_FILES[0]+'_log','PP_'+LOG_FILES[0]+'_log'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        LOG_FILES[1]: {
+            'handlers': [LOG_FILES[1]+'_log'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    
+    },
+}
