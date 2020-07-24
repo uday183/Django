@@ -121,7 +121,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOG_FILES = ['kencloud','kencloud_except']
+LOG_FILES = ['uday_info','uday_except']
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
