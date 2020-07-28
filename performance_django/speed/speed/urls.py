@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from performance.views import NormalSave, AutomicSave, BulkCreate, GetBulkNormal, GetBulk,\
-                              GetBulkQueryIterator, CeleryUserCreation
+                              GetBulkQueryIterator, CeleryUserCreation, Indexing
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^normal_save/', NormalSave.as_view(),name='save_record_normal'),
@@ -26,4 +26,5 @@ urlpatterns = [
     url(r'^get_bulk_fast/', GetBulk.as_view(),name='get_bulk_fast'),
     url(r'^get_query_iter/', GetBulkQueryIterator.as_view(),name='get_bulk_iter'),
     url(r'^celery_user_create/', CeleryUserCreation.as_view(),name='celery_user_create'),
+    url(r'^index_filter/', Indexing.as_view(),name='index_filter'),
 ]

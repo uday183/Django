@@ -33,7 +33,7 @@ class AutomicSave(APIView):
     def post(self,request):
         st = datetime.datetime.now()
         print ("started time:",st)
-        for i in range(0,10000000,1000):
+        for i in range(0,10000000,100):
             Book.objects.create(name=i,place=i,country=i)
         end = datetime.datetime.now()
         print ("end time time:",end)
@@ -157,5 +157,12 @@ class CeleryUserCreation(APIView):
         result=create_random_user_accounts.delay(int(tot))
         return Response("user created...")
 
+
+class Indexing(APIView):
+    def get(self,request):
+        #import ipdb;ipdb.set_trace()
+        res =Book.objects.filter(pk=request.GET.get('srno'))
+        
+        return Response(res[0].serial_number)
 
 #################################################################################
