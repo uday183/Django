@@ -192,7 +192,7 @@ CELERY_TIMEZONE = TIME_ZONE
 
 
 
-
+STATIC_ROOT='static/'
 
 
 

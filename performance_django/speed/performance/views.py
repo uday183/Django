@@ -6,7 +6,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import logging
 kencloud_logger = logging.getLogger('uday_info')
 kencloud_except_logger = logging.getLogger('uday_except')
-from .models import Book
+from .models import Book,Books,Author,Publisher,Store
 import datetime
 import gc
 # Create your views here.
@@ -164,5 +164,71 @@ class Indexing(APIView):
         res =Book.objects.filter(pk=request.GET.get('srno'))
         
         return Response(res[0].serial_number)
+
+#################################################################################
+#Aggregations
+#Aggregate generate result (summary) values over an entire QuerySet
+#Annotate generate an independent summary for each object in a QuerySet
+from django.db.models import Avg, Max, Min, FloatField, Count
+from django.db.models import Q
+
+class BooksQuery(APIView):
+    def get(self,request):
+        lst=[]
+        
+        # Total number of books.
+        #result['tot_books'] = Books.objects.count()
+
+        # Total number of books with publisher=Kiran
+        #result['rk_publisher_tot_books'] = Books.objects.filter(publisher__name='RK Publishers').count()
+
+        # Average price across all books.
+        #result['avg_price_all_books'] = Books.objects.all().aggregate(Avg('price')).get('price__avg')
+
+        # Max price across all books.
+        #result['max_price_book'] = Books.objects.all().aggregate(Max('price')).get('price__max')
+
+        # Difference between the highest priced book and the average price of all books.
+        #not working
+        #result['diff_high_avg_book'] = Books.objects.aggregate(price_diff=Max('price', output_field=FloatField()) - Avg('price'))
+
+
+
+        # Each publisher, each with a count of books as a "num_books" attribute.
+        #import ipdb; ipdb.set_trace()
+        # pubs = Publisher.objects.annotate(num_book=Count('books'))
+        # for each in pubs:
+        #     result={}
+        #     result['num_of_book'] = each.num_book
+        #     result['each_publisher_num_book'] = each.name
+        #     lst.append(result)
+
+
+        # Each publisher, with a separate count of books with a rating above and below 5
+        # above5 = Count('books', filter=Q(books__rating__gt=5))
+        # below5 = Count('books', filter=Q(books__rating__lt=5))
+
+        # pubs = Publisher.objects.annotate(above5=above5).annotate(below5=below5)
+        # for each in pubs:
+        #     d={}
+        #     #import ipdb; ipdb.set_trace()
+        #     d['above_5_rating'] = each.above5
+        #     d['below_5_rating'] = each.below5
+        #     d['name'] = each.name
+        #     lst.append(d)
+
+        # The top 5 publishers, in order by number of books.
+        # pubs = Publisher.objects.annotate(num_book=Count('books')).order_by('-num_book')[:5]
+        # for each in pubs:
+        #     d={}
+        #     #import ipdb; ipdb.set_trace()
+        #     d['num_of_book'] = each.num_book
+        #     d['pulisher'] = each.name
+        #     lst.append(d)
+        result={}
+        result['cal'] =Books.objects.aggregate(Avg('price'), Max('price'), Min('price'))
+
+
+        return Response(result)
 
 #################################################################################
